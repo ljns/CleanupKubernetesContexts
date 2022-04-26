@@ -30,6 +30,7 @@ Switched to context "testcluster0".
 Attempting connection
 Unable to connect to the server: dial tcp: lookup testcluster0-a98cc717.etc...: no such host
 testcluster0 could not be reached. Removing it from config file
+warning: this removed your active context, use "kubectl config use-context" to select a different one
 Setting context to testcluster1
 Switched to context "testcluster1".
 Attempting connection
