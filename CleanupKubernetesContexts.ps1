@@ -2,7 +2,7 @@
 This script can be used to clean-up old contexts from your Kubernetes config file. 
 
 It will back up your existing config file, iterate through everything in your config file, 
-try and run a command on the cluster in question and remove it from your config file if it can't.
+try and run a command on the cluster in question and remove it and associated bits from your config file if it can't.
 
 Has one defined param of ContextPath, has a set default that will work on windows but can be provided on execution with:
 
@@ -41,8 +41,18 @@ foreach ($context in $contexts)
     if ((Get-Content output.txt) -match 'Unable to connect')
     {
         Write-Host "$context could not be reached. Removing it from config file"
+        # Get the user and remove that first
+        $pattern = "user:.+" + $context + "$"
+        $user = Select-String -Path $ContextPath -Pattern $pattern -NoEmphasis
+        if ($null -ne $user)
+        {
+            $user = $user.Line.Replace('user:', ' ').Trim()
+            kubectl config unset users.$user
+        }
+        # Remove the cluster and context
         kubectl config delete-context $context
         kubectl config delete-cluster $context
+
         $removedContexts.Add($context)
     }
     else 
