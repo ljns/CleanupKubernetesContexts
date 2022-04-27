@@ -42,6 +42,7 @@ foreach ($context in $contexts)
     {
         Write-Host "$context could not be reached. Removing it from config file"
         kubectl config delete-context $context
+        kubectl config delete-cluster $context
         $removedContexts.Add($context)
     }
     else 
